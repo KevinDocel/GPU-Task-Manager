@@ -1,0 +1,5 @@
+bash test_scripts/test.sh 60;8
+bash test_scripts/test.sh 10;4
+bash test_scripts/test.sh 30;4
+bash test_scripts/test.sh 10;4
+bash test_scripts/test.sh 10;4
