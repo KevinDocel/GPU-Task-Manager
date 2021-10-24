@@ -1,15 +1,15 @@
 # GPU Task Manager
-A simple GPU task mananger that can automatically run user-defined tasks on avaiable GPUs.
+A simple GPU task manager that can automatically run user-defined tasks on available GPUs.
 
 # Usages
-There are two types of usages: tasks can be defined by either command-line arguments (for singe command task) or task files (for multiple commands task)
+There are two types of usages: tasks can be defined by either command-line arguments (for single command task) or task files (for multiple commands task)
 
 ## Command-line
 ### Arguments:
 - `--cmd`: used-defined command. e.g. "echo Hello World!".
 - `--gpus`: number of GPUs to use, default is 1. e.g. 4.
 - `--exclude-gpus`: GPU device ids that cannot be used, default is [] e.g. "6 7".
-- `--find-gpu-delay`: delay time in seconds when there is no avaiable GPUs currently, default is 600.
+- `--find-gpu-delay`: delay time in seconds when there are no available GPUs currently, default is 600.
 - `--log-path`: log file path and name, default is "./logs/submit.log".
 
 ```shell
