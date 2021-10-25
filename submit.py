@@ -125,6 +125,10 @@ class TaskManager(object):
         return proc.pid
 
     def _init_logger(self, log_path):
+        log_dir = os.path.dirname(log_path)
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+            
         logging.basicConfig(
                 level=logging.INFO, 
                 format='%(asctime)s %(levelname)s: %(message)s',
