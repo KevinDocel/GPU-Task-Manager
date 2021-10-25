@@ -35,3 +35,5 @@ echo Hi;4
 ...
 ```
 By default `num_gpus=1`
+
+New commands can be appended into task file while `submit.py` is running.
