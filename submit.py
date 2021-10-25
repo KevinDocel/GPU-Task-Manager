@@ -93,27 +93,33 @@ class TaskManager(object):
 
     
     def submit_from_file(self, filepath):
+        
+        def follow(filepath):
+            with open(filepath, 'r') as f:
+                while True:
+                    line = f.readline()
+                    if not line or line.strip() == '':
+                        time.sleep(1)
+                        continue
+                    yield line
+
         if not os.path.exists(filepath):
             raise ValueError(f"`{filepath}` does not exit!")
 
         # read task
-        self.logger.info(f"Read commands from {filepath}")
-        tasks = []
-        with open(filepath, 'r') as f:
-            for line in f.readlines():
-                items = line.strip().split(";")
-        
-                cmd = items[0].split()
-                gpus = 1
-                if len(items) > 1:
-                    gpus = int(items[1])
-        
-                tasks.append((cmd, gpus))
-        
-        # submit task
-        for task in tasks:
-            self.submit(cmd=task[0], num_gpus=task[1])
+        for line in follow(filepath):
+            self.logger.info(f'Read commands: "{line.strip()}"')
+            items = line.strip().split(";")
+    
+            cmd = items[0].split()
+            num_gpus = 1
+            if len(items) > 1:
+                num_gpus = int(items[1])
+            
+            # submit task
+            self.submit(cmd, num_gpus)
             time.sleep(self.cfg["SUBMIT_TASK_DELAY"])
+        
     
     def _run_background_process(self, cmd, gpu_ids):
         cmd_str = " ".join(cmd)
