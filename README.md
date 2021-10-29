@@ -1,6 +1,9 @@
 # GPU Task Manager
 A simple GPU task manager that can automatically run user-defined tasks on available GPUs.
 
+# Dependencies
+- [GPUtil](https://github.com/anderskm/gputil)
+
 # Usages
 There are two types of usages: tasks can be defined by either command-line arguments (for single command task) or task files (for multiple commands task)
 
