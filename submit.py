@@ -108,6 +108,9 @@ class TaskManager(object):
 
         # read task
         for line in follow(filepath):
+            if line.strip().startswith("#"):
+                # ignore comment
+                continue
             self.logger.info(f'Read commands: "{line.strip()}"')
             items = line.strip().split(";")
     
