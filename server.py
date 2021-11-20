@@ -91,6 +91,8 @@ class GPUTaskManagerServer(object):
         signal.signal(signal.SIGTERM, self.__stop)
 
     def __start(self):
+        self.__rollback_tasks()
+
         while not self.is_stop_requested:
             self.__check_if_task_done()
             # read next command from database
@@ -123,8 +125,8 @@ class GPUTaskManagerServer(object):
             time.sleep(SUBMIT_TASK_DELAY)
         
         self.logger.info("stop requested")
-        self.__rollback_pending_tasks()
         self.__check_if_task_done()
+        # self.__rollback_tasks()
 
         with orm.db_session:
             server = self.db.get_server_by_pid(os.getpid())
@@ -147,9 +149,15 @@ class GPUTaskManagerServer(object):
                 task.state = STATE.DONE
     
     @orm.db_session
-    def __rollback_pending_tasks(self):
+    def __rollback_tasks(self):
         self.logger.info("rollback pending tasks")
         for task in self.db.find_tasks_by_state(STATE.PENDING):
+            self.logger.info(f"change state of task {task.id} \
+                                from {STATE.get_state_str(task.state)} to {STATE.get_state_str(STATE.QUEUING)}")
+            task.state = STATE.QUEUING
+        
+        self.logger.info("roll back running tasks")
+        for task in self.db.find_tasks_by_state(STATE.RUNNING):
             self.logger.info(f"change state of task {task.id} \
                                 from {STATE.get_state_str(task.state)} to {STATE.get_state_str(STATE.QUEUING)}")
             task.state = STATE.QUEUING
