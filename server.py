@@ -23,14 +23,17 @@ class GPUManager(object):
         self.all_gpus = self.__get_all_gpus()
         self.gpu_process = [None for _ in range(len(self.all_gpus))]
 
-    def get_gpus(self, num_gpus, exclude_gpus, find_gpu_delay):
+    def get_gpus(self, num_gpus, exclude_gpus):
         gpu_ids = self.__find_avaiable_devices(num_gpus, exclude_gpus)
-        while len(gpu_ids) < num_gpus:
-            self.logger.info(f"Avaiable GPU devices are {gpu_ids}, but requires {num_gpus} devices")
-            time.sleep(find_gpu_delay)
-            gpu_ids = self.__find_avaiable_devices(num_gpus, exclude_gpus)
+        # while len(gpu_ids) < num_gpus:
+        #     self.logger.info(f"Avaiable GPU devices are {gpu_ids}, but requires {num_gpus} devices")
+        #     time.sleep(find_gpu_delay)
+        #     gpu_ids = self.__find_avaiable_devices(num_gpus, exclude_gpus)
         
-        return gpu_ids
+        if len(gpu_ids) < num_gpus:
+            return None
+        else:
+            return gpu_ids
     
     def update_gpu_process(self, gpu_ids, process):
         is_success = self.release_gpus(process.pid)
@@ -107,7 +110,13 @@ class GPUTaskManagerServer(object):
                     orm.commit()
                     
                     # 2. find available gpus
-                    gpu_ids = self.gpu_manager.get_gpus(task.num_gpus_required, task.exclude_gpus, FIND_GPU_DELAY)
+                    gpu_ids = self.gpu_manager.get_gpus(task.num_gpus_required, task.exclude_gpus)
+                    
+                    # no avaiable gpus
+                    if gpu_ids is None:
+                        time.sleep(FIND_GPU_DELAY)
+                        continue
+                    
                     # update task's occupied_gpus
                     task.occupied_gpus = gpu_ids
                     orm.commit()
