@@ -7,6 +7,7 @@ A simple GPU task manager that can automatically run user-defined tasks on avail
 # TODO
 - [ ] restore unfinised tasks when started
 - [ ] installable service
+- [-] show server state
 
 # Dependencies
 - [GPUtil](https://github.com/anderskm/gputil)
@@ -39,6 +40,12 @@ Suppose that `alias` has been configured , then you can start, stop, and restart
 
 ```shell
 gpu-task-serer [start|stop|restart]
+```
+
+You can also check thet running state of server by
+
+```shell
+gpu-task-server show
 ```
 
 ## Client

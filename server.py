@@ -169,7 +169,7 @@ class GPUTaskManagerServer(object):
                 can_start = True
             else:
                 if is_pid_alive(last_server.pid):
-                    raise ValueError(f"server with pid {last_server.pid} are running from {last_server.start_time}")
+                    raise ValueError(f"server with pid {last_server.pid} are running since {last_server.start_time}")
                 else:
                     last_server.stop_time = datetime.datetime.utcnow()
                     can_start = True
@@ -199,11 +199,23 @@ class GPUTaskManagerServer(object):
                             break
                 
                 print("stopped")
+    
+    def show(self):
+        with orm.db_session:
+            last_server = self.db.get_last_server()
+            if last_server is None or last_server.stop_time is not None:
+                print("no server is running")
+            else:
+                if is_pid_alive(last_server.pid):
+                    print(f"server with pid {last_server.pid} are running since {last_server.start_time}")
+                else:
+                    last_server.stop_time = datetime.datetime.utcnow()
+                    print("no server is running")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("GPU Task Manager")
-    parser.add_argument("mode", type=str, default="start", choices=["start", "stop", "restart"])
+    parser.add_argument("mode", type=str, default="start", choices=["start", "stop", "restart", "show"])
     args = parser.parse_args()
 
     db = get_database()
@@ -214,3 +226,5 @@ if __name__ == "__main__":
         server.start()
     elif args.mode == "stop":
         server.stop()
+    elif args.mode == "show":
+        server.show()
