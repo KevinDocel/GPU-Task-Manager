@@ -48,6 +48,19 @@ You can also check thet running state of server by
 gpu-task-server show
 ```
 
+In case that the server is unexpectedly down, you can periodically start server by crontab. Note that if server is running, the `start` command does nothing but print messages of the running server.
+
+```shell
+0 * * * * bash /path/to/GPU-Task-Manager/main.sh start
+```
+
+Also, you should source the python virtual env in `main.sh` if you are using conda.
+
+```shell
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate XXX
+```
+
 ## Client
 - show task state
 ```shell

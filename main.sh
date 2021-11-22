@@ -8,6 +8,8 @@ PY_PATH="${SCRIPT_DIR}/server.py"
 LOG_PATH="${SCRIPT_DIR}/logs/server.log"
 ERR_PATH="${SCRIPT_DIR}/logs/server.error"
 
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate base
 
 if [ -z "${CMD}" ]
 then
