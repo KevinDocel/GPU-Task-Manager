@@ -113,10 +113,15 @@ class GPUTaskManagerServer(object):
                     gpu_ids = self.gpu_manager.get_gpus(task.num_gpus_required, task.exclude_gpus)
                     
                     # no avaiable gpus
-                    if gpu_ids is None:
-                        time.sleep(FIND_GPU_DELAY)
-                        continue
+                    while gpu_ids is None:
+                        if self.is_stop_requested:
+                            break
+                        time.sleep(DELAY)
+                        gpu_ids = self.gpu_manager.get_gpus(task.num_gpus_required, task.exclude_gpus)
                     
+                    if self.is_stop_requested:
+                        break
+
                     # update task's occupied_gpus
                     task.occupied_gpus = gpu_ids
                     orm.commit()
@@ -131,7 +136,7 @@ class GPUTaskManagerServer(object):
 
                     self.gpu_manager.update_gpu_process(gpu_ids, process)
                 
-            time.sleep(SUBMIT_TASK_DELAY)
+            time.sleep(DELAY)
         
         self.logger.info("stop requested")
         self.__check_if_task_done()
