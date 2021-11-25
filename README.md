@@ -5,9 +5,9 @@ A simple GPU task manager that can automatically run user-defined tasks on avail
 - [2021.11.20] A whole new design which includes background server and user-friendly client.
 
 # TODO
-- [ ] restore unfinised tasks when started
+- [x] restore unfinised tasks when started
 - [ ] installable service
-- [-] show server state
+- [x] show server state
 
 # Dependencies
 - [GPUtil](https://github.com/anderskm/gputil)
