@@ -130,3 +130,6 @@ dmypy.json
 
 generate_task.py
 logs/
+*.log
+*.db
+TODO.md
