@@ -23,8 +23,7 @@ A simple GPU task manager that can automatically run user-defined tasks on avail
 - `config.py`
 
 ```python
-FIND_GPU_DELAY = 60 * 10
-SUBMIT_TASK_DELAY = 60
+DELAY = 60
 LOG_PATH = ""
 ```
 
