@@ -79,9 +79,14 @@ class GPUTaskManagerClient(object):
             print(f"priority requires positive int, but got {new_priority}")
 
     @orm.db_session
-    def show(self, limit=None):
+    def show(self, limit=None, state=None):
         all_tasks = []
-        for state in (STATE.RUNNING, STATE.PENDING, STATE.QUEUING, STATE.DONE):
+        if state is None:
+            allowed_states = (STATE.RUNNING, STATE.PENDING, STATE.QUEUING, STATE.DONE)
+        else:
+            allowed_states = (STATE.get_state_from_str(state),)
+
+        for state in allowed_states:
             tasks = self.db.find_tasks_by_state(state)
             all_tasks.extend(tasks)
         self.__formatted_print(all_tasks, limit)
@@ -108,6 +113,7 @@ if __name__ == "__main__":
     # show
     parser.add_argument("--loop", "-l", type=int, default=None)
     parser.add_argument("--limit", "-m", type=int, default=None)
+    parser.add_argument("--state", "-s", type=str, default=None)
     
     # delete
     parser.add_argument("--delete", "-d", type=int, default=None)
@@ -144,9 +150,9 @@ if __name__ == "__main__":
         while True:
             try:
                 os.system('clear')
-                client.show(args.limit)
+                client.show(args.limit, args.state)
                 time.sleep(args.loop)
             except KeyboardInterrupt:
                 sys.exit()
     else:
-        client.show(args.limit)
+        client.show(args.limit, args.state)
