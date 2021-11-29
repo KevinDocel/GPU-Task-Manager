@@ -79,20 +79,22 @@ class GPUTaskManagerClient(object):
             print(f"priority requires positive int, but got {new_priority}")
 
     @orm.db_session
-    def show(self):
+    def show(self, limit=None):
         all_tasks = []
         for state in (STATE.RUNNING, STATE.PENDING, STATE.QUEUING, STATE.DONE):
             tasks = self.db.find_tasks_by_state(state)
             all_tasks.extend(tasks)
-        self.__formatted_print(all_tasks)
+        self.__formatted_print(all_tasks, limit)
 
 
-    def __formatted_print(self, tasks):
+    def __formatted_print(self, tasks, limit):
         headers = ["ID", "STATE", "PRIORITY", "SUBMIT_TIME", "EXECUTE_TIME", "SYSTEM_PID", 
                     "OCCUPIED_GPUS", "EXCLUDE_GPUS", "NUM_GPUS", "COMMAND"]
         
         table = []
-        for t in tasks:
+        for idx, t in enumerate(tasks):
+            if limit is not None and limit == idx:
+                break
             table.append([t.id, colored(STATE.get_state_str(t.state), STATE.get_state_color(t.state)), t.priority,
                             t.submit_time.strftime("%Y-%m-%d %H:%M:%S") if t.submit_time is not None else None, 
                             t.execute_time.strftime("%Y-%m-%d %H:%M:%S") if t.execute_time is not None else None, 
@@ -105,6 +107,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("GPU Task Manager")
     # show
     parser.add_argument("--loop", "-l", type=int, default=None)
+    parser.add_argument("--limit", "-m", type=int, default=None)
     
     # delete
     parser.add_argument("--delete", "-d", type=int, default=None)
@@ -141,9 +144,9 @@ if __name__ == "__main__":
         while True:
             try:
                 os.system('clear')
-                client.show()
+                client.show(args.limit)
                 time.sleep(args.loop)
             except KeyboardInterrupt:
                 sys.exit()
     else:
-        client.show()
+        client.show(args.limit)
