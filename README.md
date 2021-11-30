@@ -65,11 +65,23 @@ conda activate XXX
 ```shell
 gpu-task-client
 ```
+
+- show first n tasks
+```shell
+gpu-task-client -m n
+```
+
 - show task state every 3 seconds
 ```shell
 gpu-task-client -l 3
 gpu-task-client --loop 3
 ```
+
+- show task by state
+```shell
+gpu-task-client -s running
+```
+
 - submit task from command line
     - `-c --command`: task command
     - `-n --num-gpus`: number of gpus required, default 1
