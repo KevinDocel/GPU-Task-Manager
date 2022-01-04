@@ -135,7 +135,7 @@ if __name__ == "__main__":
     if args.command is not None:
         client.submit(args.command, args.num_gpus, args.exclude_gpus)
     elif args.file_path is not None:
-        client.submit_from_file(args.file_path)
+        client.submit_from_file(args.file_path, args.exclude_gpus)
     elif args.delete is not None:
         client.delete(args.delete)
     elif args.update_priority is not None:
