@@ -96,6 +96,10 @@ class GPUTaskDatabase(object):
         task = Task[task_id]
         task.delete()
 
+    @db_session
+    def remove_all(self):
+        delete(t for t in Task)
+    
 
 def get_database():
     gpu_task_db = GPUTaskDatabase(db)

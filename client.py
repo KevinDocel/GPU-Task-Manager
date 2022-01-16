@@ -58,6 +58,11 @@ class GPUTaskManagerClient(object):
         else:
             print(f"task in {STATE.get_state_str(task.state)} state can not be deleted")
     
+
+    def delete_all(self):
+        self.db.remove_all()
+
+    
     @orm.db_session
     def update_priority(self, task_id, new_priority):
         task = self.db.get_task_by_id(task_id)
@@ -117,6 +122,7 @@ if __name__ == "__main__":
     
     # delete
     parser.add_argument("--delete", "-d", type=int, default=None)
+    parser.add_argument("--delete-all", action="store_true")
 
     # update priority
     parser.add_argument("--update-priority", "-p", nargs="+", default=None)
@@ -138,6 +144,8 @@ if __name__ == "__main__":
         client.submit_from_file(args.file_path, args.exclude_gpus)
     elif args.delete is not None:
         client.delete(args.delete)
+    elif args.delete_all:
+        client.delete_all()
     elif args.update_priority is not None:
         if len(args.update_priority) > 0 and len(args.update_priority) % 2 == 0:
             for i in range(len(args.update_priority) // 2):
