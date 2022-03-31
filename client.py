@@ -84,12 +84,12 @@ class GPUTaskManagerClient(object):
             print(f"priority requires positive int, but got {new_priority}")
 
     @orm.db_session
-    def show(self, limit=None, state=None):
+    def show(self, limit=None, state=[]):
         all_tasks = []
-        if state is None:
-            allowed_states = (STATE.RUNNING, STATE.PENDING, STATE.QUEUING, STATE.DONE)
+        if len(state) == 0:
+            allowed_states = [STATE.RUNNING, STATE.PENDING, STATE.QUEUING, STATE.DONE]
         else:
-            allowed_states = (STATE.get_state_from_str(state),)
+            allowed_states = [STATE.get_state_from_str(s) for s in state]
 
         for state in allowed_states:
             tasks = self.db.find_tasks_by_state(state)
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     # show
     parser.add_argument("--loop", "-l", type=int, default=None)
     parser.add_argument("--limit", "-m", type=int, default=None)
-    parser.add_argument("--state", "-s", type=str, default=None)
+    parser.add_argument("--state", "-s", nargs='+', default=[])
     
     # delete
     parser.add_argument("--delete", "-d", type=int, default=None)
